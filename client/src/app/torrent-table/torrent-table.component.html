@@ -8,7 +8,7 @@
   @for (torrent of torrents | sort: sortProperty : sortDirection; track torrent.torrentId) {
   <div class="darken-on-hover" (click)="openTorrent(torrent.torrentId)">
     <div class="name-size-row">
-      <input type="checkbox" (click)="toggleSelect(torrent.torrentId)" 
+      <input type="checkbox" (click)="toggleSelect(torrent.torrentId); $event.stopPropagation()"
         [checked]="selectedTorrents.length > 0 && selectedTorrents.length === torrents.length" />
 
 
