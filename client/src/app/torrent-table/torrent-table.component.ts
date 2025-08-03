@@ -302,13 +302,4 @@ export class TorrentTableComponent implements OnInit {
     return Math.min(progress, 100);
   }
 
-  getProgressColorHex(torrent: Torrent): string {
-    if (torrent.rdStatus === RealDebridStatus.Downloading && torrent.rdSeeders < 1) {
-      return '#f44336'; // red
-    }
-    return '#2196f3'; // default blue
-  }
-
-
-
 }
