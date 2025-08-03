@@ -54,7 +54,7 @@ export class AddNewTorrentComponent implements OnInit {
     private torrentService: TorrentService,
     private settingsService: SettingsService,
     private activatedRoute: ActivatedRoute,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params) => {
@@ -84,6 +84,15 @@ export class AddNewTorrentComponent implements OnInit {
       this.priority = settings.find((m) => m.key === 'Gui:Default:Priority')?.value as number;
 
       this.setFinishAction();
+    });
+    this.readFromClipboard();
+  }
+
+  public readFromClipboard() {
+    navigator.clipboard.readText().then(text => {
+      this.magnetLink = text;
+    }).catch(err => {
+      console.error('Failed to read clipboard contents: ', err);
     });
   }
 
