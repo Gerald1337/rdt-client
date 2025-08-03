@@ -17,3 +17,64 @@ table {
     flex-direction: column;
   }
 }
+
+
+.ellipsis-text {
+  width: 100%; /* or a fixed width like 200px */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.divider{
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.progress-size-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar {
+  margin-top: 5px;
+  // margin-right: 8px;
+}
+
+
+.name-size-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.torrent-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* Take all remaining space except size */
+  flex-grow: 1;
+  margin-left: 8px;
+  margin-right: 8px; /* small gap before filesize */
+}
+
+.torrent-size {
+  flex-shrink: 0; /* prevent shrinking */
+  white-space: nowrap;
+}
+
+.darken-on-hover:hover {
+  filter: brightness(55%);
+  transition: filter 0.1s ease;
+  cursor: pointer;
+}
+
+.darken-on-hover:hover:has(input:hover) {
+  filter: none;
+  cursor: default;
+}
+
+.darken-on-hover input[type="checkbox"] {
+  cursor: pointer;
+}

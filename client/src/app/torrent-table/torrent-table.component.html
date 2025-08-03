@@ -1,19 +1,39 @@
 @if (error && error.length > 0) {
-  <div class="notification is-danger is-light">
-    An error has occurred: {{ error }}<br />
-    Please refresh the screen after fixing this error.
-  </div>
+<div class="notification is-danger is-light">
+  An error has occurred: {{ error }}<br />
+  Please refresh the screen after fixing this error.
+</div>
 }
+<div>
+  @for (torrent of torrents | sort: sortProperty : sortDirection; track torrent.torrentId) {
+  <div class="darken-on-hover" (click)="openTorrent(torrent.torrentId)">
+    <div class="name-size-row">
+      <input type="checkbox" (click)="toggleSelect(torrent.torrentId)" 
+        [checked]="selectedTorrents.length > 0 && selectedTorrents.length === torrents.length" />
+
+
+      <div class="torrent-name">{{ torrent.rdName }}</div>
+      <div class="torrent-size">{{ torrent.rdSize | filesize }}</div>
+    </div>
+
+    <div>{{ torrent | status }}</div>
+
+    <mat-progress-bar [value]="getProgress(torrent)" mode="determinate" color="primary"
+      class="progress-bar"></mat-progress-bar>
+
+    <mat-divider class="divider"></mat-divider>
+  </div>
+  }
+</div>
+
+
 <div class="table-container">
   <table class="table is-fullwidth is-hoverable">
     <thead>
       <tr>
         <th>
-          <input
-            type="checkbox"
-            (click)="toggleDeleteSelectAll($event)"
-            [checked]="selectedTorrents.length > 0 && selectedTorrents.length === torrents.length"
-          />
+          <input type="checkbox" (click)="toggleDeleteSelectAll($event)"
+            [checked]="selectedTorrents.length > 0 && selectedTorrents.length === torrents.length" />
         </th>
         <th (click)="sort('rdName')">Name</th>
         <th (click)="sort('category')">Category</th>
@@ -26,59 +46,57 @@
         <th (click)="sort('status')">Status</th>
       </tr>
     </thead>
+
     <tbody>
       @for (torrent of torrents | sort: sortProperty : sortDirection; track torrent.torrentId) {
-        <tr>
-          <td>
-            <input
-              type="checkbox"
-              (click)="toggleSelect(torrent.torrentId)"
-              [checked]="selectedTorrents.includes(torrent.torrentId)"
-            />
-          </td>
-          <td (click)="openTorrent(torrent.torrentId)" class="break-all">
-            {{ torrent.rdName }}
-          </td>
-          <td>
-            {{ torrent.category }}
-          </td>
-          <td>
-            {{ torrent.priority }}
-          </td>
-          <td>
-            {{ torrent.rdSeeders }}
-          </td>
-          <td>
-            {{ torrent.files.length | number }}
-          </td>
-          <td>
-            {{ torrent.downloads.length | number }}
-          </td>
-          <td>
-            {{ torrent.rdSize | filesize }}
-          </td>
-          <td>
-            {{ torrent.added | date: "medium" }}
-          </td>
-          <td>
-            {{ torrent | status }}
-          </td>
-        </tr>
+      <tr>
+        <td>
+          <input type="checkbox" (click)="toggleSelect(torrent.torrentId)"
+            [checked]="selectedTorrents.includes(torrent.torrentId)" />
+        </td>
+        <td (click)="openTorrent(torrent.torrentId)" class="break-all">
+          {{ torrent.rdName }}
+        </td>
+        <td>
+          {{ torrent.category }}
+        </td>
+        <td>
+          {{ torrent.priority }}
+        </td>
+        <td>
+          {{ torrent.rdSeeders }}
+        </td>
+        <td>
+          {{ torrent.files.length | number }}
+        </td>
+        <td>
+          {{ torrent.downloads.length | number }}
+        </td>
+        <td>
+          {{ torrent.rdSize | filesize }}
+        </td>
+        <td>
+          {{ torrent.added | date: "medium" }}
+        </td>
+        <td>
+          {{ torrent | status }}
+        </td>
+      </tr>
       }
     </tbody>
   </table>
 
   <div class="flex-container">
     @if (torrents.length > 0) {
-      <button class="button is-danger" (click)="showDeleteModal()" [disabled]="selectedTorrents.length === 0">
-        Delete Selected
-      </button>
-      <button class="button is-primary" (click)="showRetryModal()" [disabled]="selectedTorrents.length === 0">
-        Retry Selected
-      </button>
-      <button class="button is-primary" (click)="changeSettingsModal()" [disabled]="selectedTorrents.length === 0">
-        Change Settings
-      </button>
+    <button class="button is-danger" (click)="showDeleteModal()" [disabled]="selectedTorrents.length === 0">
+      Delete Selected
+    </button>
+    <button class="button is-primary" (click)="showRetryModal()" [disabled]="selectedTorrents.length === 0">
+      Retry Selected
+    </button>
+    <button class="button is-primary" (click)="changeSettingsModal()" [disabled]="selectedTorrents.length === 0">
+      Change Settings
+    </button>
     }
   </div>
 </div>
@@ -121,16 +139,12 @@
         Deleting a torrent from Real-Debrid will automatically delete it here too.
       </div>
       @if (deleteError?.length > 0) {
-        <div class="notification is-danger is-light">Error deleting torrent: {{ deleteError }}</div>
+      <div class="notification is-danger is-light">Error deleting torrent: {{ deleteError }}</div>
       }
     </section>
     <footer class="modal-card-foot">
-      <button
-        class="button is-success"
-        (click)="deleteOk()"
-        [disabled]="deleting"
-        [ngClass]="{ 'is-loading': deleting }"
-      >
+      <button class="button is-success" (click)="deleteOk()" [disabled]="deleting"
+        [ngClass]="{ 'is-loading': deleting }">
         Delete selected
       </button>
       <button class="button" (click)="deleteCancel()" [disabled]="deleting" [ngClass]="{ 'is-loading': deleting }">
@@ -154,16 +168,12 @@
         or torrent file to the debrid provider.
       </p>
       @if (retryError?.length > 0) {
-        <div class="notification is-danger is-light">Error retrying torrent: {{ retryError }}</div>
+      <div class="notification is-danger is-light">Error retrying torrent: {{ retryError }}</div>
       }
     </section>
     <footer class="modal-card-foot">
-      <button
-        class="button is-success"
-        (click)="retryOk()"
-        [disabled]="retrying"
-        [ngClass]="{ 'is-loading': retrying }"
-      >
+      <button class="button is-success" (click)="retryOk()" [disabled]="retrying"
+        [ngClass]="{ 'is-loading': retrying }">
         Retry selected
       </button>
       <button class="button" (click)="retryCancel()" [disabled]="retrying" [ngClass]="{ 'is-loading': retrying }">
@@ -229,28 +239,16 @@
       <div class="field">
         <label class="label">Automatic retry downloads</label>
         <div class="control">
-          <input
-            class="input"
-            type="number"
-            max="1000"
-            min="0"
-            step="1"
-            [(ngModel)]="updateSettingsDownloadRetryAttempts"
-          />
+          <input class="input" type="number" max="1000" min="0" step="1"
+            [(ngModel)]="updateSettingsDownloadRetryAttempts" />
         </div>
         <p class="help">When a single download fails it will retry it this many times before marking it as failed.</p>
       </div>
       <div class="field">
         <label class="label">Automatic retry torrent</label>
         <div class="control">
-          <input
-            class="input"
-            type="number"
-            max="1000"
-            min="0"
-            step="1"
-            [(ngModel)]="updateSettingsTorrentRetryAttempts"
-          />
+          <input class="input" type="number" max="1000" min="0" step="1"
+            [(ngModel)]="updateSettingsTorrentRetryAttempts" />
         </div>
         <p class="help">
           When a single download has failed multiple times (see setting above) or when the torrent itself received an
@@ -270,14 +268,8 @@
       <div class="field">
         <label class="label">Torrent maximum lifetime</label>
         <div class="control">
-          <input
-            class="input"
-            type="number"
-            max="100000"
-            min="0"
-            step="1"
-            [(ngModel)]="updateSettingsTorrentLifetime"
-          />
+          <input class="input" type="number" max="100000" min="0" step="1"
+            [(ngModel)]="updateSettingsTorrentLifetime" />
         </div>
         <p class="help">
           The maximum lifetime of a torrent in minutes. When this time has passed, mark the torrent as error. If the
@@ -286,24 +278,16 @@
       </div>
 
       @if (changeSettingsError?.length > 0) {
-        <div class="notification is-danger is-light">Error changing settings: {{ changeSettingsError }}</div>
+      <div class="notification is-danger is-light">Error changing settings: {{ changeSettingsError }}</div>
       }
     </section>
     <footer class="modal-card-foot">
-      <button
-        class="button is-success"
-        (click)="changeSettingsOk()"
-        [disabled]="changingSettings"
-        [ngClass]="{ 'is-loading': changingSettings }"
-      >
+      <button class="button is-success" (click)="changeSettingsOk()" [disabled]="changingSettings"
+        [ngClass]="{ 'is-loading': changingSettings }">
         Save
       </button>
-      <button
-        class="button"
-        (click)="changeSettingsCancel()"
-        [disabled]="changingSettings"
-        [ngClass]="{ 'is-loading': changingSettings }"
-      >
+      <button class="button" (click)="changeSettingsCancel()" [disabled]="changingSettings"
+        [ngClass]="{ 'is-loading': changingSettings }">
         Cancel
       </button>
     </footer>
