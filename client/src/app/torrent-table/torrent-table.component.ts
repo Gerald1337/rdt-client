@@ -9,7 +9,7 @@ import { TorrentStatusPipe } from '../torrent-status.pipe';
 import { SortPipe } from '../sort.pipe';
 import { FileSizePipe } from '../filesize.pipe';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import {MatDividerModule} from '@angular/material/divider'; 
+import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-torrent-table',
   templateUrl: './torrent-table.component.html',
@@ -271,43 +271,43 @@ export class TorrentTableComponent implements OnInit {
     this.deleteSelectAll = this.deleteData && this.deleteRdTorrent && this.deleteLocalFiles;
   }
 
-getProgress(torrent: Torrent): number | null {
-  const totalFiles = torrent.downloads.length;
+  getProgress(torrent: Torrent): number | null {
+    const totalFiles = torrent.downloads.length;
 
-  if (torrent.rdStatus === RealDebridStatus.Downloading && torrent.rdSeeders < 1) {
-  return 100; // visually full and red
-}
-
-  // ✅ Case 1: Real-Debrid is downloading and no downloads populated yet
-  if (totalFiles === 0) {
-    if (torrent.rdStatus === RealDebridStatus.Downloading) {
-      return Math.min(torrent.rdProgress || 0, 100);
+    if (torrent.rdStatus === RealDebridStatus.Downloading && torrent.rdSeeders < 1) {
+      return 100; // visually full and red
     }
-    return null;
+
+    // ✅ Case 1: Real-Debrid is downloading and no downloads populated yet
+    if (totalFiles === 0) {
+      if (torrent.rdStatus === RealDebridStatus.Downloading) {
+        return Math.min(torrent.rdProgress || 0, 100);
+      }
+      return null;
+    }
+
+    // ✅ Case 2: Files are downloading on host
+    const downloaded = torrent.downloads.filter(m => m.downloadFinished);
+    const downloading = torrent.downloads.find(m => m.downloadStarted && !m.downloadFinished && m.bytesDone > 0);
+
+    const downloadedCount = downloaded.length;
+    let partial = 0;
+
+    if (downloading && downloading.bytesTotal > 0) {
+      partial = downloading.bytesDone / downloading.bytesTotal;
+    }
+
+    const progress = ((downloadedCount + partial) / totalFiles) * 100;
+
+    return Math.min(progress, 100);
   }
 
-  // ✅ Case 2: Files are downloading on host
-  const downloaded = torrent.downloads.filter(m => m.downloadFinished);
-  const downloading = torrent.downloads.find(m => m.downloadStarted && !m.downloadFinished && m.bytesDone > 0);
-
-  const downloadedCount = downloaded.length;
-  let partial = 0;
-
-  if (downloading && downloading.bytesTotal > 0) {
-    partial = downloading.bytesDone / downloading.bytesTotal;
+  getProgressColorHex(torrent: Torrent): string {
+    if (torrent.rdStatus === RealDebridStatus.Downloading && torrent.rdSeeders < 1) {
+      return '#f44336'; // red
+    }
+    return '#2196f3'; // default blue
   }
-
-  const progress = ((downloadedCount + partial) / totalFiles) * 100;
-
-  return Math.min(progress, 100);
-}
-
-getProgressColorHex(torrent: Torrent): string {
-  if (torrent.rdStatus === RealDebridStatus.Downloading && torrent.rdSeeders < 1) {
-    return '#f44336'; // red
-  }
-  return '#2196f3'; // default blue
-}
 
 
 
