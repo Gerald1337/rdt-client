@@ -174,12 +174,6 @@ export class AddNewTorrentComponent implements OnInit {
     }
   }
 
-  public onPaste(): void {
-    setTimeout(() => {
-      this.checkFiles();
-    }, 100);
-  }
-
   public checkFiles(): void {
     if (this.magnetLink && this.magnetLink === this.currentTorrentFile) {
       return;
