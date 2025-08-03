@@ -4,6 +4,15 @@
   Please refresh the screen after fixing this error.
 </div>
 }
+
+<div>
+  <input type="checkbox" (click)="toggleDeleteSelectAll($event)"
+    [checked]="selectedTorrents.length > 0 && selectedTorrents.length === torrents.length" />
+  <span class="select-all">Select All</span>
+</div>
+
+<mat-divider class="divider"></mat-divider>
+
 <div>
   @for (torrent of torrents | sort: sortProperty : sortDirection; track torrent.torrentId) {
   <div class="darken-on-hover" (click)="openTorrent(torrent.torrentId)">
